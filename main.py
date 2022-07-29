@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 """Main file package for DataCapture module.
 """
-
-# TODO: If a base module is set, thi import should be relocated there.
+import logging
 from typing import Optional
+
+logging.basicConfig(
+        filename="logs.txt", encoding="utf-8", level=logging.DEBUG, format="%(asctime)s %(levelname)s: %(message)s"
+)
 
 
 class DataStats:
@@ -80,12 +83,11 @@ class DataCapture:
         """
         try:
             if type(value) != int:
-                raise ValueError('Provided type value is not integer.')
+                raise ValueError("Provided type value is not integer.")
             self.storage.append(value)
             return True
         except Exception as e:
-            # TODO: Move error printing into logger structure and add log file in .gitignore.
-            print(f'Exception {e}')
+            logging.error(f"Exception: {e}")
             return False
 
     def build_stats(self) -> DataStats:
