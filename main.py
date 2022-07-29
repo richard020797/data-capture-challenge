@@ -1,7 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """Main file package for DataCapture module.
 """
+
 # TODO: If a base module is set, thi import should be relocated there.
 from typing import Optional
+
 
 class DataStats:
     """Handler for statistics operations.
@@ -36,7 +40,7 @@ class DataStats:
         Returns:
             Optional(list(int)): The list of values greater than `value` if any, else empty list.
         """
-         return [e for e in self.storage if e > value]
+        return [e for e in self.storage if e > value]
 
     def between(self, lower_value: int, upper_value: int) -> Optional[list[int]]:
         """Returns values from self.storage that are between the provided values 
@@ -79,7 +83,7 @@ class DataCapture:
                 raise ValueError('Provided type value is not integer.')
             self.storage.append(value)
             return True
-        except e:
+        except Exception as e:
             # TODO: Move error printing into logger structure and add log file in .gitignore.
             print(f'Exception {e}')
             return False
