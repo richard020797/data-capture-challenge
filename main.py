@@ -24,38 +24,36 @@ class DataStats:
         Return:
             None
         """
-        storage.sort()
         self.storage = storage 
 
     def less(self, value: int) -> Optional[list[int]]:
-        """Returns values from self.storage that are lower than the provided value (x < value).
+        """Returns n count of values from self.storage that are lower than the provided value (x < value).
         Args:
-            value (int): The value to be compared to.
+            value (int): The value to be compared to, should be between 0 - 999.
         Returns:
-            Optional(list(int)): The list of values lower than `value` if any, else empty list.
+            int: N values lower than `value`.
         """
-        return [e for e in self.storage if e < value]
+        return sum(self.storage[:value])
 
     def greater(self, value: int) -> Optional[list[int]]:
-        """Returns values from self.storage that are greater than the provided value (x > value).
+        """Returns n count of values from self.storage that are greater than the provided value (x > value).
         Args:
-            value (int): The value to be compared to.
+            value (int): The value to be compared to, should be between 0 - 998.
         Returns:
-            Optional(list(int)): The list of values greater than `value` if any, else empty list.
+            int: N values greater than `value`.
         """
-        return [e for e in self.storage if e > value]
+        return sum(self.storage[value + 1:])
 
     def between(self, lower_value: int, upper_value: int) -> Optional[list[int]]:
-        """Returns values from self.storage that are between the provided values 
+        """Returns n count of values from self.storage that are between the provided values 
             (lower_value <= x <= upper_value).
         Args:
-            lower_value (int): The value to be compared to.
-            upper_value (int): The value to be compared to.
+            lower_value (int): The value to be compared to, should be between 0 - 999.
+            upper_value (int): The value to be compared to, should be between 0 - 998.
         Returns:
-            Optional(list(int)): The list of values between lower_value and upper_value if any,
-            else empty list.
+            int: N values between lower_value and upper_value.
         """
-        return [e for e in self.storage if lower_value <= e <= upper_value]
+        return sum(self.storage[lower_value:upper_value + 1])
 
 
 
@@ -70,7 +68,7 @@ class DataCapture:
         """Will create a handler that provides the input interface and further transforms into
         the stats by a build_stats method.
         """
-        self.storage = list()
+        self.storage = [0] * 1000
 
     def add(self, value: int) -> bool:
         """Sorted insertion of the provided value (int) into the self.storage list.
@@ -84,14 +82,16 @@ class DataCapture:
         try:
             if type(value) != int:
                 raise ValueError("Provided type value is not integer.")
-            self.storage.append(value)
+            if value > 999:
+                raise ValueError("Provided value should be integer less than 1000.")
+            self.storage[value] += 1
             return True
         except Exception as e:
             logging.error(f"Exception: {e}")
             return False
 
     def build_stats(self) -> DataStats:
-        """Creates, orders and sets the stored values for the subsequent stats operations.
+        """Creates and sets the stored values for the subsequent stats operations.
         Args:
         Returns:
             DataStats: If the Stats build was successful.
