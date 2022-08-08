@@ -5,7 +5,7 @@
 
 import unittest
 
-from main import DataStats, DataCapture
+from main import DataStats, DataCapture, validate_value
 
 
 class TestDataStats(unittest.TestCase):
@@ -91,4 +91,16 @@ class TestDataCapture(unittest.TestCase):
         self.assertEqual(type(stats), DataStats)
         self.assertEqual(stats.storage, self.correct_storage)
         self.assertAlmostEqual(len(stats.storage), 1000)
+
+
+class TestValidations(unittest.TestCase):
+
+    def test_validate_value(self):
+        self.assertEqual(True, validate_value(0, 0, 999))
+        self.assertEqual(True, validate_value(999, 0, 999))
+        self.assertEqual(True, validate_value(500, 0, 999))
+        with self.assertRaises(ValueError):
+            validate_value(1000, 0, 999)
+        with self.assertRaises(ValueError):
+            validate_value(-1, 0, 999)
 
