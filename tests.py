@@ -37,8 +37,12 @@ class TestDataStats(unittest.TestCase):
     def test_between(self):
         self.assertEqual(self.data_stats.between(4, 6), len([4,5,5,6]))
         self.assertEqual(self.data_stats.between(1, 1), len([1]))
-        self.assertEqual(self.data_stats.between(6, 4), 0)
-        self.assertEqual(self.data_stats.between(0, 9), len([1,2,3,4,5,5,6,7,7,8]))
+
+        with self.assertRaises(ValueError):
+            self.data_stats.between(6, 4)
+
+        with self.assertRaises(ValueError):
+            self.data_stats.between(0, 9)
 
     def test_between_raises_type_error(self):
         with self.assertRaises(TypeError):
@@ -78,10 +82,10 @@ class TestDataCapture(unittest.TestCase):
         self.data_capture.add(1)
         self.data_capture.add(9)
         self.data_capture.add(2)
-        self.correct_storage[5] = 1
         self.correct_storage[1] = 1
-        self.correct_storage[9] = 1
-        self.correct_storage[2] = 1
+        self.correct_storage[2:4] = [2] * 3
+        self.correct_storage[5:8] = [3] * 4
+        self.correct_storage[9:] = [4] * 991
 
         stats = self.data_capture.build_stats()
         self.assertEqual(type(stats), DataStats)

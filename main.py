@@ -9,6 +9,21 @@ logging.basicConfig(
         filename="logs.txt", encoding="utf-8", level=logging.DEBUG, format="%(asctime)s %(levelname)s: %(message)s"
 )
 
+def validate_value(value: int, lower_limit: int, upper_limit: int) -> bool:
+    """Returns if a value is between 0 and 999.
+    Args:
+        value (int): The value to validate.
+        lower_limit (int): The value to be compared to.
+        upper_limit (int): The value to be compared to.
+    Returns:
+        bool: value is valid..
+    """
+    if lower_limit <= value <= upper_limit:
+        return True
+    else:
+        logging.error(f"ValueError: {value} is not between 0 - 999")
+        raise ValueError
+
 
 class DataStats:
     """Handler for statistics operations.
@@ -24,7 +39,10 @@ class DataStats:
         Return:
             None
         """
-        self.storage = storage 
+        self.storage_size = len(storage)
+        self.storage = [storage[0]]
+        for i in range(1, self.storage_size):
+            self.storage.append(self.storage[-1] + storage[i])
 
     def less(self, value: int) -> Optional[list[int]]:
         """Returns n count of values from self.storage that are lower than the provided value (x < value).
@@ -33,7 +51,8 @@ class DataStats:
         Returns:
             int: N values lower than `value`.
         """
-        return sum(self.storage[:value])
+        validate_value(value, 0, self.storage_size)
+        return self.storage[value - 1]
 
     def greater(self, value: int) -> Optional[list[int]]:
         """Returns n count of values from self.storage that are greater than the provided value (x > value).
@@ -42,7 +61,8 @@ class DataStats:
         Returns:
             int: N values greater than `value`.
         """
-        return sum(self.storage[value + 1:])
+        validate_value(value, 0, self.storage_size)
+        return self.storage[-1] - self.storage[value]
 
     def between(self, lower_value: int, upper_value: int) -> Optional[list[int]]:
         """Returns n count of values from self.storage that are between the provided values 
@@ -53,8 +73,17 @@ class DataStats:
         Returns:
             int: N values between lower_value and upper_value.
         """
-        return sum(self.storage[lower_value:upper_value + 1])
-
+        validate_value(lower_value, 0, self.storage_size - 1)
+        validate_value(upper_value, 0, self.storage_size - 1)
+        if lower_value > upper_value:
+            logging.error(f"lower_value: {lower_value} cannot be greater than upper_value: {upper_value}")
+            raise ValueError
+        if lower_value == 0:
+            lower = 0
+        else:
+            lower = self.storage[lower_value - 1]
+        upper = self.storage[upper_value]
+        return upper - lower
 
 
 class DataCapture:

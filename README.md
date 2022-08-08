@@ -23,16 +23,23 @@
   This algorithms were required to be implemented using a complexity of O(1).
 
   The fixed complexity of O(1) is only achievable for `add` method, since it represents an insert into an
-  specific index, although the read to sum the existing value count transforms this into complexity O(2).
+  specific index.
 
-  `less, greater and between` can only be implemented using O(1) complexity considering it's a slicing of the
-  self.storage list. Yet any strategy requires the sum of the result list of elements, to provide a count.
-  adding a not so common described O(m) complexity, which will define the whole operation as O(1 + m), `m` being
-  the size of the resulting slice and the operation of sum over that slice, worst case scenario `m` would be
-  the same size as `n` and therefore complexity results as O(n), would appreciate a lot any comments suggesting
-  a different alternative to reach complexity O(1).
+  The method `less` is complexity O(3) cause involves a value validation, subtraction and get value by index,
+  but if the validation is ignored it would become O(2).
 
-- `build_stats` It's just an assignment of the sotorage list, O(1) 
+  The method `greater` is complexity O(3) cause involves a value validation and two get value by index,
+  but if the validation is ignored it would become O(2).
+
+  The method `between` is complexity O(7) cause involves three value validations, two substracions
+  and two get value by index, but if the validations are ignored it would become O(4).
+
+  All the previous methods are constant, but not time complexity O(1).
+
+
+- `build_stats` It's a list transformation into a new list with the accumulates of the DataCapture.storage.
+  Complexity O(n).
+
 
 ## Logging
   A basic loggin strategy was implemented, just a basic error handling and a text file based system
